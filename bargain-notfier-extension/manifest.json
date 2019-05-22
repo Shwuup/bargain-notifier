@@ -1,0 +1,19 @@
+{
+
+  "manifest_version": 2,
+  "name": "Bargain Notfiier",
+  "version": "1.0",
+
+  "description": "Sends a push notification when there's a bargain you're interested in",
+
+  "icons": {
+    "48": "icons/border-48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*/"],
+      "js": ["bargain-notifier"]
+    }
+  ]
+}
