@@ -10,8 +10,9 @@ function apiCall(listOfItems) {
   }).then(response => response.json());
 }
 
-function createNotification(listOfItems) {
-  var response = apiCall(listOfItems);
+function createNotification() {
+  var itemList = localStorage.getItem("itemList").split(",");
+  var response = apiCall(itemList);
   if (
     !(Object.keys(response).length === 0 && response.constructor === Object)
   ) {
@@ -24,5 +25,4 @@ function createNotification(listOfItems) {
   }
 }
 
-// setInterval(apiCall, 1.8 * 1000000);
-setInterval(createNotification, 30000, listOfItems);
+setInterval(createNotification, 900000);

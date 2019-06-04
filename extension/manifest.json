@@ -4,14 +4,21 @@
   "version": "1.0",
 
   "description": "Sends a push notification when there's a bargain you're interested in",
-
+  "homepage_url": "https://github.com/Shwuup/bargain-notifier-extension",
   "icons": {
     "48": "icons/border-48.png"
+  },
+
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": "icons/border-48.png",
+    "default_title": "Bargain Notifier",
+    "default_popup": "popup/itemsofinterest.html"
   },
 
   "background": {
     "scripts": ["bargain-notifier.js"]
   },
 
-  "permissions": ["notifications"]
+  "permissions": ["notifications", "storage"]
 }
