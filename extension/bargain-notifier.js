@@ -12,10 +12,8 @@ function apiCall(listOfItems) {
 
 function createNotification() {
   var itemList = localStorage.getItem("itemList").split(",");
-  var response = apiCall(itemList);
-  if (
-    !(Object.keys(response).length === 0 && response.constructor === Object)
-  ) {
+  if (itemList.length > 0) {
+    apiCall(itemList);
     browser.notifications.create({
       type: "basic",
       iconUrl: browser.extension.getURL("icons/border-48.png"),
@@ -25,4 +23,4 @@ function createNotification() {
   }
 }
 
-setInterval(createNotification, 900000);
+setInterval(createNotification, 1800000);
