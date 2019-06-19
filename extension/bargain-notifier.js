@@ -11,16 +11,22 @@ function apiCall(listOfItems) {
 }
 
 function createNotification() {
-  var itemList = localStorage.getItem("itemList").split(",");
-  if (itemList.length > 0) {
-    apiCall(itemList);
-    browser.notifications.create({
-      type: "basic",
-      iconUrl: browser.extension.getURL("icons/border-48.png"),
-      title: "Bargain alert!",
-      message: "New bargain/s on the front page!"
-    });
+  var keywordArray = localStorage.getItem("keywordArrayString").split(",");
+  if (keywordArray.length > 0) {
+    var request = apiCall(keywordArray);
+    console.log(request);
+    if (request) {
+      browser.notifications.onClicked.addListener(() =>
+        window.open("https://www.ozbargain.com.au/")
+      );
+      browser.notifications.create({
+        type: "basic",
+        iconUrl: browser.extension.getURL("icons/border-48.png"),
+        title: "Bargain alert!",
+        message: "New bargain/s on the front page!"
+      });
+    }
   }
 }
 
-setInterval(createNotification, 1800000);
+// setInterval(createNotification, 60000);

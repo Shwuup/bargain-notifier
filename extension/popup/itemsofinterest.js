@@ -11,11 +11,16 @@ document.addEventListener("submit", e => {
 
 document.getElementById("keyword-input").focus();
 var keywordArray = localStorage.getItem("keywordArrayString").split(",");
+//for each keyword, make a div with a discard button and insert into grid
 keywordArray.forEach(function(keywordString) {
-  var button = document.createElement("button");
+  var div = document.createElement("div");
+  div.className = "keyword-div";
   var text = document.createTextNode(keywordString);
-  button.appendChild(text);
-  button.className = "keyword-button";
+  div.appendChild(text);
+
+  var button = document.createElement("button");
+  button.append(document.createTextNode("X"));
+  button.className = "close-button";
   button.onclick = () => {
     var keywordArray = localStorage.getItem("keywordArrayString").split(",");
     var newKeywordArrayString = keywordArray
@@ -27,7 +32,8 @@ keywordArray.forEach(function(keywordString) {
     } else {
       localStorage.setItem("keywordArrayString", newKeywordArrayString);
     }
-    button.style.display = "none";
+    div.style.visibility = "hidden";
   };
-  document.getElementById("wrapper").appendChild(button);
+  div.appendChild(button);
+  document.getElementById("wrapper").appendChild(div);
 });
