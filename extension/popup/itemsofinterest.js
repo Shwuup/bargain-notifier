@@ -1,39 +1,43 @@
+//capture user keyword input
 document.addEventListener("submit", e => {
   var keyword = document.getElementById("keyword-input").value;
-  if (!localStorage.getItem("keywordArrayString")) {
-    localStorage.setItem("keywordArrayString", keyword);
-  } else {
-    var keywordArray = localStorage.getItem("keywordArrayString").split(",");
-    keywordArray.push(keyword);
-    localStorage.setItem("keywordArrayString", keywordArray.toString());
+  var keywordObject = JSON.parse(localStorage.getItem("keywordObjectString"));
+  if (Object.keys(keywordObject).length === 0) {
+    keywordObject.keywords = {};
   }
-});
-
-document.getElementById("keyword-input").focus();
-var keywordArray = localStorage.getItem("keywordArrayString").split(",");
-//for each keyword, make a div with a discard button and insert into grid
-keywordArray.forEach(function(keywordString) {
-  var div = document.createElement("div");
-  div.className = "keyword-div";
-  var text = document.createTextNode(keywordString);
-  div.appendChild(text);
-
-  var button = document.createElement("button");
-  button.append(document.createTextNode("X"));
-  button.className = "close-button";
-  button.onclick = () => {
-    var keywordArray = localStorage.getItem("keywordArrayString").split(",");
-    var newKeywordArrayString = keywordArray
-      .filter(currentKeywordString => currentKeywordString !== keywordString)
-      .toString();
-
-    if (newKeywordArrayString === "") {
-      localStorage.removeItem("keywordArrayString");
-    } else {
-      localStorage.setItem("keywordArrayString", newKeywordArrayString);
-    }
-    div.style.visibility = "hidden";
+  keywordObject["keywords"][keyword] = {
+    offers: [],
+    isOnFrontPage: false,
+    hasUserClicked: false
   };
-  div.appendChild(button);
-  document.getElementById("wrapper").appendChild(div);
+
+  localStorage.setItem("keywordObjectString", JSON.stringify(keywordObject));
 });
+document.getElementById("keyword-input").focus();
+
+var keywordObject = JSON.parse(localStorage.getItem("keywordObjectString"));
+if (Object.keys(keywordObject).length > 0) {
+  var keywordObjectArray = Object.keys(keywordObject.keywords);
+  //for each keyword, make a div with a discard button and insert into grid
+  keywordObjectArray.forEach(function(keyword) {
+    var div = document.createElement("div");
+    div.className = "keyword-div";
+    var text = document.createTextNode(keyword);
+    div.appendChild(text);
+    var closeButton = document.createElement("button");
+    closeButton.append(document.createTextNode("X"));
+    closeButton.className = "close-button";
+    closeButton.onclick = () => {
+      delete keywordObject["keywords"][keyword];
+      localStorage.setItem(
+        "keywordObjectString",
+        JSON.stringify(keywordObject)
+      );
+      div.style.visibility = "hidden";
+    };
+    div.appendChild(closeButton);
+    document.getElementById("wrapper").appendChild(div);
+  });
+}
+
+//#98FB98
