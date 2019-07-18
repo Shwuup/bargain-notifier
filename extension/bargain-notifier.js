@@ -1,5 +1,5 @@
 function apiCall() {
-  return fetch("http://localhost:8000/bargain", {
+  return fetch("http://localhost:8000/test_bargain", {
     body: localStorage.getItem("keywordObjectString"),
     credentials: "omit",
     method: "POST",
@@ -27,9 +27,6 @@ function createNotification() {
             JSON.stringify(newKeywordObject)
           );
 
-          browser.notifications.onClicked.addListener(() =>
-            window.open("https://www.ozbargain.com.au/")
-          );
           browser.notifications.create({
             type: "basic",
             iconUrl: browser.extension.getURL("icons/border-48.png"),
@@ -41,5 +38,6 @@ function createNotification() {
   }
 }
 
+localStorage.setItem("seenDeals", "{}");
 localStorage.setItem("keywordObjectString", "{}");
-setInterval(createNotification, 60000);
+setInterval(createNotification, 120000);

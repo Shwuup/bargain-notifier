@@ -13,7 +13,7 @@
   margin: 15px;
 }
 
-.keyword-div {
+.keyword {
   background-color: #7fdbff;
   display: flex;
   justify-content: center;
@@ -28,6 +28,23 @@
   line-height: 1;
   border: none;
   position: relative;
+}
+.keyword-frontpage {
+  background-color: #98fb98;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  font-size: 20px;
+  color: white;
+  line-height: 1;
+  border: none;
+  position: relative;
+  cursor: pointer;
 }
 
 .close-button:hover {
