@@ -3,9 +3,6 @@ document.getElementById("keyword-input").focus();
 document.addEventListener("submit", e => {
   var keyword = document.getElementById("keyword-input").value;
   var keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
-  if (Object.keys(keywordsObject).length === 0) {
-    keywordsObject.keywords = {};
-  }
   keywordsObject["keywords"][keyword] = {
     offers: [],
     isOnFrontPage: false,
@@ -20,8 +17,8 @@ document.getElementById("keyword-input").focus();
 var keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
 if (Object.keys(keywordsObject).length > 0) {
   var keywordArray = Object.keys(keywordsObject.keywords);
-  //for each keyword, make a div with a discard button and insert into grid
-  keywordArray.forEach(function(keyword) {
+  //for each keyword, make a clikable/non-clickable div with a discard button and insert into grid
+  keywordArray.forEach(keyword => {
     var keywordInfo = keywordsObject["keywords"][keyword];
     var div = document.createElement("div");
     if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
@@ -47,6 +44,15 @@ if (Object.keys(keywordsObject).length > 0) {
 
         keywordInfo["lastSeenDealIndex"] = listOfOffers.length - 1;
         keywordInfo["hasUserClicked"] = true;
+        if (keywordsObject["numberOfUnclickedKeywords"] > 0) {
+          keywordsObject["numberOfUnclickedKeywords"] -= 1;
+          if (keywordsObject["numberOfUnclickedKeywords"] === 0) {
+            browser.runtime.sendMessage({
+              action: "Change icon color"
+            });
+          }
+        }
+
         //update state
         localStorage.setItem(
           "keywordObjectString",
@@ -56,7 +62,6 @@ if (Object.keys(keywordsObject).length > 0) {
     } else {
       div.className = "keyword";
     }
-    // div.className = "keyword";
     var text = document.createTextNode(keyword);
     div.appendChild(text);
     var closeButton = document.createElement("button");

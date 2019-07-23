@@ -1,11 +1,21 @@
 function apiCall() {
-  return fetch("http://localhost:8000/test_bargain", {
+  return fetch("http://localhost:8000/bargain", {
     body: localStorage.getItem("keywordObjectString"),
     credentials: "omit",
     method: "POST",
     mode: "cors",
     headers: {
       "Content-Type": "application/json"
+    }
+  });
+}
+
+function handleMessage(request, sender, sendResponse) {
+  console.log("Message from the content script: " + request.action);
+  browser.browserAction.setIcon({
+    path: {
+      16: "icons/icons8-letter-o-16-grey.png",
+      32: "icons/icons8-letter-o-32-grey.png"
     }
   });
 }
@@ -18,14 +28,21 @@ function createNotification() {
       .then(jsonResponse => {
         if (jsonResponse.areThereNewDeals) {
           //update the state
+
           var newKeywords = jsonResponse.keywords;
-          console.log(newKeywords);
-          var newKeywordObject = {};
-          newKeywordObject["keywords"] = newKeywords;
+          console.log(jsonResponse);
+          delete jsonResponse.areThereNewDeals;
           localStorage.setItem(
             "keywordObjectString",
-            JSON.stringify(newKeywordObject)
+            JSON.stringify(jsonResponse)
           );
+
+          browser.browserAction.setIcon({
+            path: {
+              16: "icons/icons8-letter-o-16-green.png",
+              32: "icons/icons8-letter-o-32-green.png"
+            }
+          });
 
           browser.notifications.create({
             type: "basic",
@@ -39,5 +56,10 @@ function createNotification() {
 }
 
 localStorage.setItem("seenDeals", "{}");
-localStorage.setItem("keywordObjectString", "{}");
+localStorage.setItem(
+  "keywordObjectString",
+  '{"keywords":{}, "numberOfUnclickedKeywords": 0}'
+);
+
+browser.runtime.onMessage.addListener(handleMessage);
 setInterval(createNotification, 120000);
