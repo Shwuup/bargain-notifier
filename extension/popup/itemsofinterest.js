@@ -1,6 +1,4 @@
-document.getElementById("keyword-input").focus();
-//capture user keyword input
-document.addEventListener("submit", e => {
+function handleSubmit() {
   var keyword = document.getElementById("keyword-input").value;
   var keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
   keywordsObject["keywords"][keyword] = {
@@ -11,8 +9,53 @@ document.addEventListener("submit", e => {
   };
 
   localStorage.setItem("keywordObjectString", JSON.stringify(keywordsObject));
-});
-document.getElementById("keyword-input").focus();
+}
+
+function handleAllBargainClicks() {
+  var keywordsJson = JSON.parse(localStorage.getItem("keywordObjectString"));
+  var keywordArray = Object.keys(keywordsJson.keywords);
+  keywordArray.forEach(keyword => {
+    var keywordInfo = keywordsJson["keywords"][keyword];
+    if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
+      handleBargainClick(keywordsJson, keyword);
+    }
+  });
+}
+
+function handleBargainClick(keywordsJson, keyword) {
+  var keywordInfo = keywordsJson["keywords"][keyword];
+  var seenDeals = JSON.parse(localStorage.getItem("seenDeals"));
+  var listOfOffers = keywordInfo["offers"];
+  for (
+    var i = keywordInfo["lastSeenDealIndex"] + 1;
+    i < listOfOffers.length;
+    ++i
+  ) {
+    browser.tabs.create({
+      url: listOfOffers[i][0]
+    });
+    if (!seenDeals[keyword]) {
+      seenDeals[keyword] = [listOfOffers[i]];
+    } else {
+      seenDeals[keyword].push(listOfOffers[i]);
+    }
+    localStorage.setItem("seenDeals", JSON.stringify(seenDeals));
+  }
+
+  keywordInfo["lastSeenDealIndex"] = listOfOffers.length - 1;
+  keywordInfo["hasUserClicked"] = true;
+  if (keywordsJson["numberOfUnclickedKeywords"] > 0) {
+    keywordsJson["numberOfUnclickedKeywords"] -= 1;
+    if (keywordsJson["numberOfUnclickedKeywords"] === 0) {
+      browser.runtime.sendMessage({
+        action: "Change icon color"
+      });
+    }
+  }
+
+  //update state
+  localStorage.setItem("keywordObjectString", JSON.stringify(keywordsJson));
+}
 
 var keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
 if (Object.keys(keywordsObject).length > 0) {
@@ -23,42 +66,9 @@ if (Object.keys(keywordsObject).length > 0) {
     var div = document.createElement("div");
     if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
       div.className = "keyword-frontpage";
-      var listOfOffers = keywordInfo["offers"];
-      var seenDeals = JSON.parse(localStorage.getItem("seenDeals"));
-      div.addEventListener("click", () => {
-        for (
-          var i = keywordInfo["lastSeenDealIndex"] + 1;
-          i < listOfOffers.length;
-          ++i
-        ) {
-          browser.tabs.create({
-            url: listOfOffers[i][0]
-          });
-          if (!seenDeals[keyword]) {
-            seenDeals[keyword] = [listOfOffers[i]];
-          } else {
-            seenDeals[keyword].push(listOfOffers[i]);
-          }
-          localStorage.setItem("seenDeals", JSON.stringify(seenDeals));
-        }
-
-        keywordInfo["lastSeenDealIndex"] = listOfOffers.length - 1;
-        keywordInfo["hasUserClicked"] = true;
-        if (keywordsObject["numberOfUnclickedKeywords"] > 0) {
-          keywordsObject["numberOfUnclickedKeywords"] -= 1;
-          if (keywordsObject["numberOfUnclickedKeywords"] === 0) {
-            browser.runtime.sendMessage({
-              action: "Change icon color"
-            });
-          }
-        }
-
-        //update state
-        localStorage.setItem(
-          "keywordObjectString",
-          JSON.stringify(keywordsObject)
-        );
-      });
+      div.addEventListener("click", () =>
+        handleBargainClick(keywordsObject, keyword)
+      );
     } else {
       div.className = "keyword";
     }
@@ -79,3 +89,6 @@ if (Object.keys(keywordsObject).length > 0) {
     document.getElementById("wrapper").appendChild(div);
   });
 }
+document.getElementById("keyword-input").focus();
+document.addEventListener("submit", handleSubmit);
+document.getElementById("open-all").onclick = handleAllBargainClicks;

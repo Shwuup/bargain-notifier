@@ -7,14 +7,19 @@
   </head>
 
   <body>
-    <div class="input-form">
-      <form action="">
-        Keyword:
-        <input type="text" name="Keyword" id="keyword-input" value="" /><br />
-        <input type="submit" value="Submit" />
-      </form>
+    <div class="column">
+      <div class="input-form">
+        <form action="">
+          <label for="keyword-input">Keyword:</label>
+          <input type="text" name="Keyword" id="keyword-input" value="" /><br />
+        </form>
+      </div>
+      <div class="options">
+        <button class="button" id="open-all">Open all</button>
+      </div>
+      <div id="wrapper"></div>
     </div>
-    <div id="wrapper"></div>
+
     <script src="itemsofinterest.js"></script>
   </body>
 </html>

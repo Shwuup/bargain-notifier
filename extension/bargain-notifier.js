@@ -23,13 +23,11 @@ function handleMessage(request, sender, sendResponse) {
 function createNotification() {
   var keywordObject = JSON.parse(localStorage.getItem("keywordObjectString"));
   if (Object.keys(keywordObject["keywords"]).length > 0) {
-    var request = apiCall()
+    apiCall()
       .then(response => response.json())
       .then(jsonResponse => {
         if (jsonResponse.areThereNewDeals) {
           //update the state
-
-          var newKeywords = jsonResponse.keywords;
           console.log(jsonResponse);
           delete jsonResponse.areThereNewDeals;
           localStorage.setItem(
@@ -60,6 +58,5 @@ localStorage.setItem(
   "keywordObjectString",
   '{"keywords":{}, "numberOfUnclickedKeywords": 0}'
 );
-
 browser.runtime.onMessage.addListener(handleMessage);
 setInterval(createNotification, 120000);
