@@ -21,7 +21,7 @@ function handleMessage(request, sender, sendResponse) {
 }
 
 function createNotification() {
-  var keywordObject = JSON.parse(localStorage.getItem("keywordObjectString"));
+  let keywordObject = JSON.parse(localStorage.getItem("keywordObjectString"));
   if (Object.keys(keywordObject["keywords"]).length > 0) {
     apiCall()
       .then(response => response.json())

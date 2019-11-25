@@ -1,6 +1,6 @@
 function handleSubmit() {
-  var keyword = document.getElementById("keyword-input").value;
-  var keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
+  let keyword = document.getElementById("keyword-input").value;
+  let keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
   keywordsObject["keywords"][keyword] = {
     offers: [],
     isOnFrontPage: false,
@@ -12,10 +12,10 @@ function handleSubmit() {
 }
 
 function handleAllBargainClicks() {
-  var keywordsJson = JSON.parse(localStorage.getItem("keywordObjectString"));
-  var keywordArray = Object.keys(keywordsJson.keywords);
+  let keywordsJson = JSON.parse(localStorage.getItem("keywordObjectString"));
+  let keywordArray = Object.keys(keywordsJson.keywords);
   keywordArray.forEach(keyword => {
-    var keywordInfo = keywordsJson["keywords"][keyword];
+    let keywordInfo = keywordsJson["keywords"][keyword];
     if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
       handleBargainClick(keywordsJson, keyword);
     }
@@ -23,11 +23,11 @@ function handleAllBargainClicks() {
 }
 
 function handleBargainClick(keywordsJson, keyword) {
-  var keywordInfo = keywordsJson["keywords"][keyword];
-  var seenDeals = JSON.parse(localStorage.getItem("seenDeals"));
-  var listOfOffers = keywordInfo["offers"];
+  let keywordInfo = keywordsJson["keywords"][keyword];
+  let seenDeals = JSON.parse(localStorage.getItem("seenDeals"));
+  let listOfOffers = keywordInfo["offers"];
   for (
-    var i = keywordInfo["lastSeenDealIndex"] + 1;
+    let i = keywordInfo["lastSeenDealIndex"] + 1;
     i < listOfOffers.length;
     ++i
   ) {
@@ -57,13 +57,13 @@ function handleBargainClick(keywordsJson, keyword) {
   localStorage.setItem("keywordObjectString", JSON.stringify(keywordsJson));
 }
 
-var keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
+let keywordsObject = JSON.parse(localStorage.getItem("keywordObjectString"));
 if (Object.keys(keywordsObject).length > 0) {
-  var keywordArray = Object.keys(keywordsObject.keywords);
+  let keywordArray = Object.keys(keywordsObject.keywords);
   //for each keyword, make a clikable/non-clickable div with a discard button and insert into grid
   keywordArray.forEach(keyword => {
-    var keywordInfo = keywordsObject["keywords"][keyword];
-    var div = document.createElement("div");
+    let keywordInfo = keywordsObject["keywords"][keyword];
+    let div = document.createElement("div");
     if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
       div.className = "keyword-frontpage";
       div.addEventListener("click", () =>
@@ -72,9 +72,9 @@ if (Object.keys(keywordsObject).length > 0) {
     } else {
       div.className = "keyword";
     }
-    var text = document.createTextNode(keyword);
+    let text = document.createTextNode(keyword);
     div.appendChild(text);
-    var closeButton = document.createElement("button");
+    let closeButton = document.createElement("button");
     closeButton.append(document.createTextNode("X"));
     closeButton.className = "close-button";
     closeButton.onclick = () => {
