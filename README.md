@@ -5,7 +5,7 @@ A WebExtension that notifies you when there are deals you are interested in on O
 ## Usage
 
 ![](usage.gif)
-
+(notification sped up for demonstration purposes)
 ## Installation
 
 To install the extension locally
