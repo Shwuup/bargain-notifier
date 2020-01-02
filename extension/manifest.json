@@ -23,5 +23,11 @@
     "scripts": ["bargain-notifier.js"]
   },
 
-  "permissions": ["notifications", "storage"]
+  "permissions": ["notifications", "storage"],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "addon@example.com"
+    }
+  }
 }
