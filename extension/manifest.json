@@ -6,14 +6,14 @@
   "description": "Sends a push notification when there's a bargain you're interested in",
   "homepage_url": "https://github.com/Shwuup/bargain-notifier-extension",
   "icons": {
-    "48": "icons/icons8-letter-o-48-grey.png"
+    "48": "icons/icons8-o-48.png"
   },
 
   "browser_action": {
     "browser_style": true,
     "default_icon": {
-      "16": "icons/icons8-letter-o-16-grey.png",
-      "32": "icons/icons8-letter-o-32-grey.png"
+      "16": "icons/icons8-o-16.png",
+      "32": "icons/icons8-o-32.png"
     },
     "default_title": "Bargain Notifier",
     "default_popup": "popup/itemsofinterest.html"

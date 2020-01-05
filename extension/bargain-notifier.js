@@ -14,8 +14,8 @@ function handleMessage(request) {
   console.log("Message from the content script: " + request.action);
   browser.browserAction.setIcon({
     path: {
-      16: "icons/icons8-letter-o-16-grey.png",
-      32: "icons/icons8-letter-o-32-grey.png"
+      16: "icons/icons8-o-16.png",
+      32: "icons/icons8-o-32.png"
     }
   });
 }
@@ -38,16 +38,17 @@ function createNotification() {
             browser.storage.local.set(jsonResponse).then(onSet, onError);
             browser.browserAction.setIcon({
               path: {
-                16: "icons/icons8-letter-o-16-green.png",
-                32: "icons/icons8-letter-o-32-green.png"
+                16: "icons/icons8-o-16-green.png",
+                32: "icons/icons8-o-32-green.png"
               }
             });
 
+            var audio = new Audio("kaching.mp3");
+            audio.play();
+
             browser.notifications.create({
               type: "basic",
-              iconUrl: browser.extension.getURL(
-                "icons/icons8-letter-o-48-green.png"
-              ),
+              iconUrl: browser.extension.getURL("icons/icons8-b-48-green.png"),
               title: "Bargain alert!",
               message: "New bargain/s on the front page!"
             });
@@ -76,5 +77,5 @@ browser.storage.local.get().then(results => {
 });
 
 browser.runtime.onMessage.addListener(handleMessage);
-setTimeout(createNotification, 60000);
+setTimeout(createNotification, 180000);
 setInterval(createNotification, 1800000);
