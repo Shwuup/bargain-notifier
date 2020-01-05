@@ -30,6 +30,11 @@ function handleSubmit() {
     .then(keywordObject => storeItem(keywordObject).then(onSet, onError));
 }
 function handleAllBargainClicks() {
+  const frontpageDivs = document.getElementsByClassName("keyword frontpage");
+  Array.prototype.forEach.call(frontpageDivs, function(x) {
+    x.style.backgroundColor = "#7fdbff";
+  });
+
   getItem()
     .then(onGet, onError)
     .then(keywordsJson => {
@@ -41,6 +46,25 @@ function handleAllBargainClicks() {
         }
       });
     });
+  window.close();
+}
+
+function deleteAll() {
+  const isConfirm = confirm("Are you sure you want to delete everything?");
+  if (isConfirm) {
+    const keywordDivs = document.getElementsByClassName("keyword");
+    Array.prototype.forEach.call(keywordDivs, function(x) {
+      x.style.visibility = "hidden";
+    });
+
+    const newKeywordInfo = {
+      keywords: {},
+      numberOfUnclickedKeywords: 0,
+      seenDeals: {}
+    };
+    changeIconToDefault(newKeywordInfo);
+    storeItem(newKeywordInfo).then(onSet, onError);
+  } else return;
 }
 
 function handleBargainClick(keywordsJson, keyword) {
@@ -66,40 +90,38 @@ function handleBargainClick(keywordsJson, keyword) {
   keywordInfo["lastSeenDealIndex"] = listOfOffers.length - 1;
   keywordInfo["hasUserClicked"] = true;
 
-  changeIconToGreyIfAble(keywordsJson);
+  changeIconToDefault(keywordsJson);
 
   //update state
   storeItem(keywordsJson).then(onSet, onError);
+  window.close();
 }
 
-function changeIconToGreyIfAble(keywords) {
-  if (keywords["numberOfUnclickedKeywords"] > 0) {
+function changeIconToDefault(keywords) {
+  if (keywords["numberOfUnclickedKeywords"] > 0)
     keywords["numberOfUnclickedKeywords"] -= 1;
-    if (keywords["numberOfUnclickedKeywords"] === 0) {
-      browser.runtime.sendMessage({
-        action: "Change icon color"
-      });
-    }
+  if (keywords["numberOfUnclickedKeywords"] === 0) {
+    browser.runtime.sendMessage({
+      action: "Change icon color"
+    });
   }
 }
 
-function createCloseButton(keywordInfo) {
+function createCloseButton(keywordInfo, keyword, div) {
   let closeButton = document.createElement("button");
   closeButton.append(document.createTextNode("X"));
   closeButton.className = "close-button";
   closeButton.addEventListener("click", event => {
     event.stopPropagation();
     if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
-      changeIconToGreyIfAble(obj);
+      changeIconToDefault(obj);
     }
-    delete keywordsObject[keyword];
-    storeItem(obj).then(onSet, onError);
+    delete keywordInfo["keywords"][keyword];
+    storeItem(keywordInfo).then(onSet, onError);
     div.style.visibility = "hidden";
   });
   return closeButton;
 }
-
-function createKeywordButton() {}
 
 const keywords = getItem().then(onGet, onError);
 keywords.then(obj => {
@@ -111,11 +133,8 @@ keywords.then(obj => {
       let keywordInfo = keywordsObject[keyword];
       let div = document.createElement("div");
       if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
-        div.className = "keyword-frontpage";
-        div.addEventListener(
-          "click",
-          () => (div.style.backgroundColor = "#7fdbff")
-        );
+        div.className = "keyword frontpage";
+        div.addEventListener("click", () => (div.className = "keyword"));
         div.addEventListener("click", () => {
           handleBargainClick(obj, keyword);
         });
@@ -124,7 +143,7 @@ keywords.then(obj => {
       }
       let text = document.createTextNode(keyword);
       div.appendChild(text);
-      const closeButton = createCloseButton(obj);
+      const closeButton = createCloseButton(obj, keyword, div);
       div.appendChild(closeButton);
       document.getElementById("wrapper").appendChild(div);
     });
@@ -134,3 +153,4 @@ keywords.then(obj => {
 document.getElementById("keyword-input").focus();
 document.addEventListener("submit", handleSubmit);
 document.getElementById("open-all").onclick = handleAllBargainClicks;
+document.getElementById("delete-all").onclick = deleteAll;
