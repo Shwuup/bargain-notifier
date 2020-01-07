@@ -17,8 +17,9 @@
   padding-right: 10px;
   padding-top: 5px;
   font-size: 10px;
-  color: #397fd4;
-  border-color: #397fd4;
+  color: #e67e22;
+  border-color: #e67e22;
+  border-style: solid;
   border-width: thin;
   position: relative;
   cursor: pointer;
@@ -44,7 +45,7 @@
 
 .button:hover {
   color: white;
-  background-color: #397fd4;
+  background-color: #e67e22;
 }
 
 .column {
@@ -54,7 +55,7 @@
   margin: 10px;
 }
 .keyword {
-  background-color: #7fdbff;
+  background-color: #e67e22;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

@@ -20,33 +20,13 @@ function handleSubmit() {
   keywords
     .then(keywordObject => {
       keywordObject["keywords"][keyword] = {
-        offers: [],
+        offers: {},
         isOnFrontPage: false,
-        hasUserClicked: false,
-        lastSeenDealIndex: -1
+        hasUserClicked: false
       };
       return keywordObject;
     })
     .then(keywordObject => storeItem(keywordObject).then(onSet, onError));
-}
-function handleAllBargainClicks() {
-  const frontpageDivs = document.getElementsByClassName("keyword frontpage");
-  Array.prototype.forEach.call(frontpageDivs, function(x) {
-    x.style.backgroundColor = "#7fdbff";
-  });
-
-  getItem()
-    .then(onGet, onError)
-    .then(keywordsJson => {
-      keywordArray = Object.keys(keywordsJson.keywords);
-      keywordArray.forEach(keyword => {
-        let keywordInfo = keywordsJson["keywords"][keyword];
-        if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
-          handleBargainClick(keywordsJson, keyword);
-        }
-      });
-    });
-  window.close();
 }
 
 function deleteAll() {
@@ -66,35 +46,39 @@ function deleteAll() {
     storeItem(newKeywordInfo).then(onSet, onError);
   } else return;
 }
-
+function handleAllBargainClicks() {
+  getItem()
+    .then(onGet, onError)
+    .then(keywordsJson => {
+      keywordArray = Object.keys(keywordsJson.keywords);
+      keywordArray.forEach(keyword => {
+        let keywordInfo = keywordsJson["keywords"][keyword];
+        if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
+          handleBargainClick(keywordsJson, keyword);
+        }
+      });
+    });
+}
 function handleBargainClick(keywordsJson, keyword) {
+  keywordDiv = document.getElementById(keyword);
+  keywordDiv.className = "keyword";
   let keywordInfo = keywordsJson["keywords"][keyword];
   const seenDeals = keywordsJson["seenDeals"];
-  let listOfOffers = keywordInfo["offers"];
-
-  for (
-    let i = keywordInfo["lastSeenDealIndex"] + 1;
-    i < listOfOffers.length;
-    ++i
-  ) {
+  const offers = Object.keys(keywordInfo["offers"]);
+  offers.forEach(offerUrl => {
     browser.tabs.create({
-      url: listOfOffers[i][0]
+      url: offerUrl
     });
-    if (!seenDeals[keyword]) {
-      seenDeals[keyword] = [listOfOffers[i]];
-    } else {
-      seenDeals[keyword].push(listOfOffers[i]);
-    }
-  }
-
-  keywordInfo["lastSeenDealIndex"] = listOfOffers.length - 1;
+    seenDeals[offerUrl] = keywordInfo["offers"][offerUrl];
+  });
   keywordInfo["hasUserClicked"] = true;
-
+  keywordInfo["offers"] = {};
   changeIconToDefault(keywordsJson);
 
   //update state
-  storeItem(keywordsJson).then(onSet, onError);
-  window.close();
+  storeItem(keywordsJson)
+    .then(onSet, onError)
+    .then(_ => window.close());
 }
 
 function changeIconToDefault(keywords) {
@@ -132,9 +116,9 @@ keywords.then(obj => {
     keywordArray.forEach(keyword => {
       let keywordInfo = keywordsObject[keyword];
       let div = document.createElement("div");
+      div.id = keyword;
       if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
         div.className = "keyword frontpage";
-        div.addEventListener("click", () => (div.className = "keyword"));
         div.addEventListener("click", () => {
           handleBargainClick(obj, keyword);
         });

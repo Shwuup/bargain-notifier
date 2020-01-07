@@ -26,7 +26,8 @@ function createNotification() {
     if (Object.keys(keywordObject["keywords"]).length > 0) {
       let payload = {
         keywords: keywordObject["keywords"],
-        numberOfUnclickedKeywords: keywordObject["numberOfUnclickedKeywords"]
+        numberOfUnclickedKeywords: keywordObject["numberOfUnclickedKeywords"],
+        seenDeals: keywordObject["seenDeals"]
       };
 
       apiCall(JSON.stringify(payload))
