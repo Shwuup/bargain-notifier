@@ -134,7 +134,7 @@ keywords.then(obj => {
   }
 });
 
-document.getElementById("keyword-input").focus();
 document.addEventListener("submit", handleSubmit);
 document.getElementById("open-all").onclick = handleAllBargainClicks;
 document.getElementById("delete-all").onclick = deleteAll;
+document.getElementById("keyword-input").focus();

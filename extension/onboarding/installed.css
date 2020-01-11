@@ -1,0 +1,31 @@
+p {
+  font-family: Helvetica;
+  color: #415058;
+}
+h3 {
+  font-family: Helvetica;
+  color: #e67e22;
+}
+#main {
+  margin: 50px;
+  width: 600px;
+  height: 1000px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  margin: auto;
+}
+
+#indented {
+  margin-left: 65px;
+}
+strong {
+  color: #e67e22;
+}
+
+body {
+  background-color: #fffdd0;
+}
