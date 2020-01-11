@@ -4,9 +4,7 @@ function apiCall(payloadBody) {
     credentials: "omit",
     method: "POST",
     mode: "cors",
-    headers: {
-      "Content-Type": "application/json"
-    }
+    headers: { "Content-Type": "application/json" }
   });
 }
 
@@ -20,7 +18,24 @@ function handleMessage(request) {
   });
 }
 
+function playAudio() {
+  var audio = new Audio("kaching.mp3");
+  browser.storage.local.get("sliderValue").then(vol => {
+    audio.volume = vol.sliderValue;
+    audio.play();
+  });
+}
+
 function createNotification() {
+  browser.notifications.create({
+    type: "basic",
+    iconUrl: browser.extension.getURL("icons/icons8-b-48-green.png"),
+    title: "Bargain alert!",
+    message: "New bargain/s on the front page!"
+  });
+}
+
+function checkForNewDeals() {
   const keywordPromise = browser.storage.local.get();
   keywordPromise.then(keywordObject => {
     if (Object.keys(keywordObject["keywords"]).length > 0) {
@@ -34,7 +49,7 @@ function createNotification() {
         .then(response => response.json())
         .then(jsonResponse => {
           if (jsonResponse.areThereNewDeals) {
-            //update the state
+            // update the state
             delete jsonResponse.areThereNewDeals;
             browser.storage.local.set(jsonResponse).then(onSet, onError);
             browser.browserAction.setIcon({
@@ -43,16 +58,8 @@ function createNotification() {
                 32: "icons/icons8-o-32-green.png"
               }
             });
-
-            var audio = new Audio("kaching.mp3");
-            audio.play();
-
-            browser.notifications.create({
-              type: "basic",
-              iconUrl: browser.extension.getURL("icons/icons8-b-48-green.png"),
-              title: "Bargain alert!",
-              message: "New bargain/s on the front page!"
-            });
+            playAudio();
+            createNotification();
           }
         });
     }
@@ -68,15 +75,22 @@ function onGet(item) {
 function onSet() {
   console.log("Succesfull set");
 }
+function setDefaultValues() {
+  browser.storage.local.get().then(results => {
+    if (Object.keys(results).length === 0) {
+      browser.storage.local
+        .set({
+          keywords: {},
+          numberOfUnclickedKeywords: 0,
+          seenDeals: {},
+          sliderValue: 0.5
+        })
+        .then(onSet, onError);
+    }
+  });
+}
 
-browser.storage.local.get().then(results => {
-  if (Object.keys(results).length === 0) {
-    browser.storage.local
-      .set({ keywords: {}, numberOfUnclickedKeywords: 0, seenDeals: {} })
-      .then(onSet, onError);
-  }
-});
-
+setDefaultValues();
 browser.runtime.onMessage.addListener(handleMessage);
-setTimeout(createNotification, 180000);
-setInterval(createNotification, 1800000);
+setTimeout(checkForNewDeals, 180000);
+setInterval(checkForNewDeals, 1800000);
