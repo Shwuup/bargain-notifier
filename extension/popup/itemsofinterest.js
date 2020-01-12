@@ -91,18 +91,20 @@ function changeIconToDefault(keywords) {
   }
 }
 
-function createCloseButton(keywordInfo, keyword, div) {
+function createCloseButton(obj, keyword, div) {
   let closeButton = document.createElement("button");
   closeButton.append(document.createTextNode("X"));
   closeButton.className = "close-button";
+  let keywordInfo = obj["keywords"][keyword];
   closeButton.addEventListener("click", event => {
     event.stopPropagation();
     if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
       changeIconToDefault(obj);
     }
-    delete keywordInfo["keywords"][keyword];
-    storeItem(keywordInfo).then(onSet, onError);
-    div.style.visibility = "hidden";
+    delete obj["keywords"][keyword];
+    storeItem(obj)
+      .then(onSet, onError)
+      .then((div.style.visibility = "hidden"));
   });
   return closeButton;
 }

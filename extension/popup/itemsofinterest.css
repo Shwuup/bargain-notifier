@@ -71,7 +71,7 @@
   position: relative;
 }
 .frontpage {
-  background-color: #98fb98;
+  background-color: #2ecc71;
   cursor: pointer;
 }
 
@@ -89,4 +89,20 @@
   right: 3px;
   top: -3px;
   color: white;
+}
+
+input[type="text"] {
+  width: 225px;
+  padding: 5px 8px;
+  border-radius: 2px;
+  border-style: solid;
+  border-color: lightgrey;
+  border-width: 1px;
+}
+input[type="text"]:focus {
+  border-color: #f0b681;
+}
+
+label {
+  font-family: "Helvetica";
 }
