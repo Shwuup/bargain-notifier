@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "OzBargain Notifier",
-  "version": "1.1",
+  "version": "1.2",
 
   "description": "Sends a push notification when there's a bargain you're interested in",
   "homepage_url": "https://github.com/Shwuup/bargain-notifier-extension",
@@ -31,7 +31,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "@ozbargain-notifer"
+      "id": "@ozbargain-notifier"
     }
   }
 }

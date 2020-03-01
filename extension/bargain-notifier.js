@@ -29,7 +29,7 @@ function playAudio() {
 function createNotification() {
   browser.notifications.create({
     type: "basic",
-    iconUrl: browser.extension.getURL("icons/icons8-b-48-green.png"),
+    iconUrl: browser.extension.getURL("icons/icons8-o-48-green.png"),
     title: "Bargain alert!",
     message: "New bargain/s on the front page!"
   });
