@@ -9,7 +9,9 @@ A WebExtension that notifies you when there are deals you are interested in on O
 
 ## Installation
 
-To install the extension locally
+Install it as a Firefox extension [here](https://addons.mozilla.org/en-US/firefox/addon/ozbargain-notifier/#&gid=1&pid=1).
+
+To install it locally
 
 - open Firefox
 - enter "about:debugging" in the URL bar
@@ -20,5 +22,7 @@ To install the extension locally
 
 - JavaScript/CSS/HTML
 - Python
-- Heroku
-- AWS S3
+- AWS
+  - API Gateway
+  - Lambda
+  - S3
