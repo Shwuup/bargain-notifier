@@ -1,11 +1,14 @@
 function apiCall(payloadBody) {
-  return fetch("https://notifier-backend.herokuapp.com/bargain", {
-    body: payloadBody,
-    credentials: "omit",
-    method: "POST",
-    mode: "cors",
-    headers: { "Content-Type": "application/json" }
-  });
+  return fetch(
+    "https://jqjhg6iepc.execute-api.ap-southeast-2.amazonaws.com/prod/bargain",
+    {
+      body: payloadBody,
+      credentials: "omit",
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "application/json", Accept: "*/*" }
+    }
+  );
 }
 
 function handleMessage(request) {
@@ -82,6 +85,7 @@ function setDefaultValues() {
         .set({
           keywords: {},
           numberOfUnclickedKeywords: 0,
+          isNotified: false,
           seenDeals: {},
           sliderValue: 0.5
         })
@@ -104,5 +108,5 @@ browser.runtime.onInstalled.addListener(async ({ reason, temporary }) => {
 
 setDefaultValues();
 browser.runtime.onMessage.addListener(handleMessage);
-setTimeout(checkForNewDeals, 180000);
+setTimeout(checkForNewDeals, 60000);
 setInterval(checkForNewDeals, 1800000);
