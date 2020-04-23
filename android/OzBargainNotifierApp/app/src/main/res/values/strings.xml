@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">OzBargain Notifier</string>
+    <string name="edit_message">Enter a keyword</string>
+    <string name="button_send">Add</string>
+    <string name="button_delete_all">Delete all</string>
+    <string name="channel_name">Deals</string>
+    <string name="channel_description">Make sound and pop on screen</string>
+    <string name="channel_id">deal_channel</string>
+    <string name="keywords_title">Current keywords</string>
+</resources>
