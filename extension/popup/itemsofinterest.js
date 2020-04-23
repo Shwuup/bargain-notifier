@@ -19,11 +19,13 @@ function handleSubmit() {
   const keywords = getItem("keywords");
   keywords
     .then(keywordObject => {
-      keywordObject["keywords"][keyword] = {
-        offers: {},
+      const newKeyword = {
+        keyword: keyword,
+        offers: [],
         isOnFrontPage: false,
         hasUserClicked: false
       };
+      keywordObject["keywords"].push(newKeyword);
       return keywordObject;
     })
     .then(keywordObject => storeItem(keywordObject).then(onSet, onError));
@@ -38,7 +40,7 @@ function deleteAll() {
     });
 
     const newKeywordInfo = {
-      keywords: {},
+      keywords: [],
       numberOfUnclickedKeywords: 0,
       seenDeals: {}
     };
@@ -50,29 +52,35 @@ function handleAllBargainClicks() {
   getItem()
     .then(onGet, onError)
     .then(keywordsJson => {
-      keywordArray = Object.keys(keywordsJson.keywords);
-      keywordArray.forEach(keyword => {
-        let keywordInfo = keywordsJson["keywords"][keyword];
+      let keywordArray = keywordsJson.keywords;
+      keywordArray.forEach(keywordInfo => {
         if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
-          handleBargainClick(keywordsJson, keyword);
+          handleBargainClick(keywordsJson, keywordInfo.keyword);
         }
       });
     });
 }
+
 function handleBargainClick(keywordsJson, keyword) {
   keywordDiv = document.getElementById(keyword);
   keywordDiv.className = "keyword";
-  let keywordInfo = keywordsJson["keywords"][keyword];
+  // let keywordInfo = keywordsJson["keywords"][keyword];
+  let keywordInfo = keywordsJson["keywords"].find(
+    keywordInfo => keywordInfo.keyword === keyword
+  );
+
   const seenDeals = keywordsJson["seenDeals"];
-  const offers = Object.keys(keywordInfo["offers"]);
-  offers.forEach(offerUrl => {
+  // const offers = Object.keys(keywordInfo["offers"]);
+  const offers = keywordInfo["offers"];
+  offers.forEach(offerInfo => {
+    const offerUrl = offerInfo["url"];
     browser.tabs.create({
       url: offerUrl
     });
-    seenDeals[offerUrl] = keywordInfo["offers"][offerUrl];
+    seenDeals[offerUrl] = offerInfo["title"];
   });
   keywordInfo["hasUserClicked"] = true;
-  keywordInfo["offers"] = {};
+  keywordInfo["offers"] = [];
   changeIconToDefault(keywordsJson);
 
   //update state
@@ -95,13 +103,18 @@ function createCloseButton(obj, keyword, div) {
   let closeButton = document.createElement("button");
   closeButton.append(document.createTextNode("X"));
   closeButton.className = "close-button";
-  let keywordInfo = obj["keywords"][keyword];
+  let keywordInfo = obj["keywords"].find(
+    keywordInfo => keywordInfo.keyword === keyword
+  );
   closeButton.addEventListener("click", event => {
     event.stopPropagation();
     if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {
       changeIconToDefault(obj);
     }
-    delete obj["keywords"][keyword];
+    const newKeywords = obj["keywords"].filter(
+      keywordInfo => keywordInfo.keyword !== keyword
+    );
+    obj["keywords"] = newKeywords;
     storeItem(obj)
       .then(onSet, onError)
       .then((div.style.visibility = "hidden"));
@@ -111,12 +124,12 @@ function createCloseButton(obj, keyword, div) {
 
 const keywords = getItem().then(onGet, onError);
 keywords.then(obj => {
-  let keywordsObject = obj["keywords"];
-  let keywordArray = Object.keys(keywordsObject);
+  let keywordArray = obj["keywords"];
+
   if (keywordArray.length > 0) {
-    //for each keyword, make a clickable/non-clickable div with a discard button and insert into grid
-    keywordArray.forEach(keyword => {
-      let keywordInfo = keywordsObject[keyword];
+    keywordArray.forEach(keywordInfo => {
+      const keyword = keywordInfo["keyword"];
+      // let keywordInfo = keywordsObject[keyword];
       let div = document.createElement("div");
       div.id = keyword;
       if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {

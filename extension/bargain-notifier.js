@@ -41,16 +41,20 @@ function createNotification() {
 function checkForNewDeals() {
   const keywordPromise = browser.storage.local.get();
   keywordPromise.then(keywordObject => {
-    if (Object.keys(keywordObject["keywords"]).length > 0) {
+    console.log(keywordObject);
+    if (keywordObject["keywords"].length > 0) {
+      console.log("making payload");
       let payload = {
         keywords: keywordObject["keywords"],
         numberOfUnclickedKeywords: keywordObject["numberOfUnclickedKeywords"],
         seenDeals: keywordObject["seenDeals"]
       };
+      console.log(payload);
 
       apiCall(JSON.stringify(payload))
         .then(response => response.json())
         .then(jsonResponse => {
+          console.log(jsonResponse);
           if (jsonResponse.areThereNewDeals) {
             // update the state
             delete jsonResponse.areThereNewDeals;
@@ -83,7 +87,7 @@ function setDefaultValues() {
     if (Object.keys(results).length === 0) {
       browser.storage.local
         .set({
-          keywords: {},
+          keywords: [],
           numberOfUnclickedKeywords: 0,
           isNotified: false,
           seenDeals: {},
