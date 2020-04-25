@@ -68,21 +68,10 @@
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="16dp"
-        android:onClick="doTheThing"
+        android:onClick="apiCall"
         android:text="API CALL"
         app:layout_constraintStart_toEndOf="@+id/deleteAllButton"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:onClick="createTestNotification"
-        android:text="Testy"
-        app:layout_constraintStart_toEndOf="@+id/button3"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
         android:id="@+id/keywordsTitle"

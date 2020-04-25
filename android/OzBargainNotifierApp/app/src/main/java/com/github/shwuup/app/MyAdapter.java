@@ -15,6 +15,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
+
         public MyViewHolder(TextView v) {
             super(v);
             textView = v;
@@ -34,11 +35,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     }
 
-    public void addAllItems(List<Keyword> keywords) {
-        this.keywords.clear();
-        this.keywords.addAll(keywords);
-        notifyDataSetChanged();
-    }
 
     public void clear() {
         int size = keywords.size();

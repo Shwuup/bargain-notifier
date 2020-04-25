@@ -1,6 +1,9 @@
 package com.github.shwuup.app;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 
@@ -25,13 +28,26 @@ public class Keyword {
         offers.add(new Offer(link, description));
     }
 
-    public String serialize() {
-
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(this);
-        return jsonString;
-
+    @NonNull
+    @Override
+    public String toString() {
+        GsonBuilder gsonB = new GsonBuilder();
+        Gson gson = gsonB.create();
+        return gson.toJson(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Keyword)) {
+            return false;
+        }
+        String thisKeyword = this.toString();
+        String otherKeyword = obj.toString();
+        return thisKeyword.equals(otherKeyword);
+    }
 
+    @Override
+    public int hashCode() {
+        return this.keyword.hashCode();
+    }
 }

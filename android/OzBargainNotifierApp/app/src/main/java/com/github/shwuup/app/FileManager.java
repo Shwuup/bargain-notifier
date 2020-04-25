@@ -37,7 +37,7 @@ public class FileManager {
         return contents;
     }
 
-    public void writeFile(File file, String content){
+    public void writeFile(File file, String content) {
         try {
             FileOutputStream stream = new FileOutputStream(file);
             OutputStreamWriter writer = new OutputStreamWriter(stream);

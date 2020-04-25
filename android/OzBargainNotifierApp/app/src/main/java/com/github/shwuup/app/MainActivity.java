@@ -1,6 +1,5 @@
 package com.github.shwuup.app;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
@@ -10,7 +9,6 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+    public static final String EXTRA_MESSAGE = "com.github.shwuup.app.MESSAGE";
     private KeywordManager keywordManager;
     private NotificationManager notificationManager;
     private RecyclerView recyclerView;
@@ -37,14 +35,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
 
         this.keywordManager = new KeywordManager(getApplicationContext());
         createNotificationChannel();
         setSupportActionBar(myToolbar);
         List<Keyword> keywords = keywordManager.readKeywords();
 
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+
+        recyclerView = findViewById(R.id.my_recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
@@ -52,13 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter = new MyAdapter(keywords);
         recyclerView.setAdapter(mAdapter);
-
-
-
-//        displayKeywords(keywords);
     }
 
-    public void doTheThing(View view) {
+    public void apiCall(View view) {
         Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
         PeriodicWorkRequest httpRequest = new PeriodicWorkRequest.Builder(RequestWorker.class, 15, TimeUnit.MINUTES).setConstraints(constraints).build();
         WorkManager.getInstance(getApplicationContext()).enqueue(httpRequest);
@@ -81,22 +76,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void createTestNotification(View view) {
-        Notification notification = new NotificationCompat.Builder(getApplicationContext(), getApplicationContext().getResources().getString(R.string.channel_id))
-                .setGroup("com.android.example.DEALS")
-                .setContentTitle("Ozbargain Notifier")
-                .setContentText("testy mctesty")
-                .setSmallIcon(R.drawable.notification_icon)
-                .setGroupSummary(false)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("testy mctesty"))
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify("testy mctesty".hashCode(), notification);
-    }
-
-
     public void onAdd(View view) {
-        EditText editText = (EditText) findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.editText);
         String keyword = editText.getText().toString();
         keywordManager.addKeyword(keyword);
         this.mAdapter.add(new Keyword(keyword));

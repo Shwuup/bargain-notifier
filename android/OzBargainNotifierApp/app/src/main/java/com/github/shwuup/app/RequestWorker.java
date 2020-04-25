@@ -54,7 +54,7 @@ public class RequestWorker extends Worker {
         String CHANNEL_ID = ctx.getResources().getString(R.string.channel_id);
         String title = "OzBargain Notifier";
         String text;
-        String GROUP_KEY_DEALS = "com.android.example.DEALS";
+        String GROUP_KEY_DEALS = "com.github.shwuup.app.DEALS";
         List<Notification> notifications = new ArrayList<Notification>();
 
         for (Offer offer : offers) {
@@ -79,43 +79,6 @@ public class RequestWorker extends Worker {
         return notifications;
     }
 
-    private ArrayList<Offer> marshallOffers(JSONArray jsonArray) {
-        ArrayList<Offer> offers = new ArrayList<>();
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject o = jsonArray.getJSONObject(i);
-                Offer offer = new Offer(o.getString("url"), o.getString("title"));
-                offers.add(offer);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return offers;
-    }
-
-    private Keyword marshallKeyword(JSONObject jsonObject) throws JSONException {
-        ArrayList<Offer> offers = marshallOffers(jsonObject.getJSONArray("offers"));
-        String newKeyword = jsonObject.getString("keyword");
-        boolean newIsOnFrontPage = jsonObject.getBoolean("isOnFrontPage");
-        boolean newHasUserClicked = jsonObject.getBoolean("hasUserClicked");
-        Keyword keyword = new Keyword(newKeyword, offers, newIsOnFrontPage, newHasUserClicked);
-        return keyword;
-    }
-
-    private List<Keyword> convertToKeywordList(JSONArray jsonArray) {
-        List<Keyword> keywordObjects = new ArrayList<>();
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                Keyword keyword = marshallKeyword(obj);
-                keywordObjects.add(keyword);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return keywordObjects;
-    }
 
     private void sendRequest() {
         RequestQueue queue = Volley.newRequestQueue(this.ctx);
@@ -125,7 +88,7 @@ public class RequestWorker extends Worker {
         final JSONObject requestBody = new JSONObject();
         String keywordJson = gson.toJson(keywordManager.readKeywords());
         String seenDealsJson = gson.toJson(seenDealsManager.readSeenDeals());
-        Log.v("SEENDEALS", seenDealsJson);
+        Log.v("RequestWorker", seenDealsJson);
 
         try {
             JSONArray keywords = new JSONArray(keywordJson);
@@ -133,18 +96,18 @@ public class RequestWorker extends Worker {
             requestBody.put("keywords", keywords);
             requestBody.put("numberOfUnclickedKeywords", 0);
             requestBody.put("seenDeals", seenDeals);
-            Log.v("REQUEST", requestBody.toString());
+            Log.v("RequestWorker", requestBody.toString());
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.POST, url, requestBody, new Response.Listener<JSONObject>() {
 
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.v("STUFF", "Response: " + response.toString());
+                            Log.v("RequestWorker", "Response: " + response.toString());
                             try {
                                 List<Offer> offers = new ArrayList<>();
                                 JSONArray j = response.getJSONArray("keywords");
-                                List<Keyword> keywords = convertToKeywordList(j);
+                                List<Keyword> keywords = keywordManager.deserializeKeywords(j);
                                 for (Keyword keyword : keywords) {
                                     List<Offer> keywordOffers = keyword.offers;
                                     if (!keywordOffers.isEmpty()) {
@@ -160,7 +123,7 @@ public class RequestWorker extends Worker {
                                     for (int i = 0; i < notifications.size() - 1; i++) {
                                         Notification notification = notifications.get(i);
                                         Bundle extras = notification.extras;
-                                        String id = extras.getString(notification.EXTRA_TEXT);
+                                        String id = extras.getString(Notification.EXTRA_TEXT);
                                         notificationManager.notify(id.hashCode(), notification);
                                     }
                                     if (activeNotifications.length == 0) {
@@ -168,7 +131,7 @@ public class RequestWorker extends Worker {
                                                 .setSmallIcon(R.drawable.notification_icon)
                                                 .setContentTitle("Bundled Notification")
                                                 .setContentText("Content text for bundle")
-                                                .setGroup("com.android.example.DEALS")
+                                                .setGroup("com.github.shwuup.app.DEALS")
                                                 .setGroupSummary(true)
                                                 .build();
                                         notificationManager.notify("Bundled Notification".hashCode(), bundleNotification);
@@ -185,7 +148,7 @@ public class RequestWorker extends Worker {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             // TODO: Handle error
-                            Log.e("ERROR", "NEINNEINEIN");
+                            Log.e("RequestWorker", "Request error");
 
                         }
                     });
