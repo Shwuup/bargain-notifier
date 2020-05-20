@@ -53,6 +53,12 @@ public class KeywordManager extends FileManager {
         }
     }
 
+    public void deleteKeyword(final String keywordToDelete) {
+        List<Keyword> keywords = readKeywords();
+        keywords.removeIf(k -> k.keyword.equals(keywordToDelete));
+        writeKeywords(keywords);
+    }
+
     public List<Keyword> deserializeKeywords(JSONArray jsonArray) {
         ArrayList<Keyword> keywordObjects = new ArrayList<>();
         try {

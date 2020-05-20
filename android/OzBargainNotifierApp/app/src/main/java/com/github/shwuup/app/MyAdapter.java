@@ -1,6 +1,7 @@
 package com.github.shwuup.app;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -16,9 +17,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
 
-        public MyViewHolder(TextView v) {
+        public MyViewHolder(View v) {
             super(v);
-            textView = v;
+            textView = v.findViewById(R.id.keyword);
         }
     }
 
@@ -28,11 +29,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     @Override
     public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView v = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.my_text_view, parent, false);
-
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_text_view, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
-
     }
 
 
@@ -44,6 +43,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public void add(Keyword keyword) {
         this.keywords.add(keyword);
+        notifyDataSetChanged();
+    }
+
+    public void delete(String keywordToDelete) {
+        this.keywords.removeIf(k -> k.keyword.equals(keywordToDelete));
         notifyDataSetChanged();
     }
 

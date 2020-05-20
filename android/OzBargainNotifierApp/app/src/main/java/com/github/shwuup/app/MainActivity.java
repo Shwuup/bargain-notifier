@@ -6,10 +6,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Constraints;
@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
 
         this.keywordManager = new KeywordManager(getApplicationContext());
+        this.keywordManager.deleteKeywordFile();
+        SeenDealsManager seenDealsManager = new SeenDealsManager(getApplicationContext());
+        seenDealsManager.deleteSeenDealsFile();
         createNotificationChannel();
         setSupportActionBar(myToolbar);
         List<Keyword> keywords = keywordManager.readKeywords();
@@ -46,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.my_recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
 
         mAdapter = new MyAdapter(keywords);
         recyclerView.setAdapter(mAdapter);
@@ -81,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
         String keyword = editText.getText().toString();
         keywordManager.addKeyword(keyword);
         this.mAdapter.add(new Keyword(keyword));
+        editText.getText().clear();
+    }
+
+    public void onDelete(View view) {
+        TextView text = findViewById(R.id.keyword);
+        String keyword = text.getText().toString();
+        this.keywordManager.deleteKeyword(keyword);
+        this.mAdapter.delete(keyword);
     }
 
 

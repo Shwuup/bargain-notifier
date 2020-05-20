@@ -79,7 +79,6 @@ public class RequestWorker extends Worker {
         return notifications;
     }
 
-
     private void sendRequest() {
         RequestQueue queue = Volley.newRequestQueue(this.ctx);
         String url = "https://jqjhg6iepc.execute-api.ap-southeast-2.amazonaws.com/prod/bargain";
@@ -120,7 +119,7 @@ public class RequestWorker extends Worker {
                                     NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(NOTIFICATION_SERVICE);
                                     StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
 
-                                    for (int i = 0; i < notifications.size() - 1; i++) {
+                                    for (int i = 0; i < notifications.size(); i++) {
                                         Notification notification = notifications.get(i);
                                         Bundle extras = notification.extras;
                                         String id = extras.getString(Notification.EXTRA_TEXT);
