@@ -7,4 +7,5 @@
     <string name="channel_description">Make sound and pop on screen</string>
     <string name="channel_id">deal_channel</string>
     <string name="keywords_title">Current keywords</string>
+    <string name="notification_sound">kaching.mp3</string>
 </resources>
