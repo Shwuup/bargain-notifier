@@ -6,11 +6,16 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,6 +60,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void showConfirmationForDeleteAll(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Are you sure you want to delete all keywords?");
+
+        builder.setPositiveButton("Delete", (dialog, id) -> onDeleteAll());
+        builder.setNegativeButton("Cancel", (dialog, id) -> {
+            dialog.cancel();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +83,11 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
         notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
         this.keywordManager = new KeywordManager(getApplicationContext());
+//        keywordManager.deleteKeywordFile();
         createNotificationChannel();
         setSupportActionBar(myToolbar);
         List<Keyword> keywords = keywordManager.readKeywords();
+        Log.v("MainActivity", keywords.toString());
         recyclerView = findViewById(R.id.my_recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -88,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(getApplicationContext()).enqueue(httpRequest);
 
     }
-
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -121,32 +142,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onAdd(View view) {
+    public void addKeyword() {
         EditText editText = findViewById(R.id.editText);
-        String keyword = editText.getText().toString();
-        keywordManager.addKeyword(keyword);
-        this.mAdapter.add(new Keyword(keyword));
-        editText.getText().clear();
+        String keyword = editText.getText().toString().toLowerCase();
+        if(keyword.equals("")) {
+
+
+        } else {
+            keywordManager.addKeyword(keyword);
+            this.mAdapter.add(new Keyword(keyword));
+            editText.getText().clear();
+        }
+    }
+
+    public void onAdd(View view) {
+        addKeyword();
     }
 
     public void onAdd() {
-        EditText editText = findViewById(R.id.editText);
-        String keyword = editText.getText().toString();
-        keywordManager.addKeyword(keyword);
-        this.mAdapter.add(new Keyword(keyword));
-        editText.getText().clear();
+        addKeyword();
     }
 
-
     public void onDelete(View view) {
-        TextView text = findViewById(R.id.keyword);
+        ViewParent parent = view.getParent();
+        ViewGroup parentView = (ViewGroup) parent;
+        TextView text = null;
+        for (int i = 0; i < parentView.getChildCount(); i++) {
+            View child = parentView.getChildAt(i);
+            if (!(child instanceof Button)) {
+                text = (TextView) child;
+            }
+        }
         String keyword = text.getText().toString();
         this.keywordManager.deleteKeyword(keyword);
         this.mAdapter.delete(keyword);
     }
 
-
-    public void onDeleteAll(View view) {
+    public void onDeleteAll() {
         keywordManager.deleteAll();
         this.mAdapter.clear();
     }

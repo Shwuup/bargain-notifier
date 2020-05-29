@@ -72,6 +72,7 @@ public class RequestWorker extends Worker {
                     .setGroupSummary(false)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                     .setContentIntent(pending)
+                    .setAutoCancel(true)
                     .build();
 
             notifications.add(notification);
@@ -143,7 +144,6 @@ public class RequestWorker extends Worker {
                             }
                         }
                     }, new Response.ErrorListener() {
-
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             // TODO: Handle error

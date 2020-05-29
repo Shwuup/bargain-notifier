@@ -1,6 +1,7 @@
 package com.github.shwuup.app;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -110,6 +111,7 @@ public class KeywordManager extends FileManager {
         List<Keyword> keywords = readKeywords();
         keywords.add(newKeyword);
         writeKeywords(keywords);
+        Log.v("KeywordManager", this.readKeywords().toString());
     }
 
     public void deleteAll() {

@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="parent"
             android:gravity="start"
+            android:paddingLeft="10dp"
             android:textSize="28sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
