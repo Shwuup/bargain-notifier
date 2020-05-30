@@ -6,6 +6,8 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.github.shwuup.R;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -42,14 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setListeners() {
-        editText = findViewById(R.id.editText);
-        editText.setOnFocusChangeListener((view, hasFocus) -> {
-            if (!hasFocus) {
-                editText.setText(R.string.edit_message);
-            } else {
-                editText.setText("");
-            }
-        });
+        TextInputLayout textInputLayout = findViewById(R.id.editText);
+        EditText editText = textInputLayout.getEditText();
 
         editText.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -83,7 +80,24 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
         notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
         this.keywordManager = new KeywordManager(getApplicationContext());
-//        keywordManager.deleteKeywordFile();
+        TextInputLayout textInputLayout = findViewById(R.id.editText);
+        editText = textInputLayout.getEditText();
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (count == 0 && after > 0) {
+                    textInputLayout.setError(null);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         createNotificationChannel();
         setSupportActionBar(myToolbar);
         List<Keyword> keywords = keywordManager.readKeywords();
@@ -143,11 +157,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addKeyword() {
-        EditText editText = findViewById(R.id.editText);
+        TextInputLayout textInputLayout = findViewById(R.id.editText);
+        EditText editText = textInputLayout.getEditText();
+
         String keyword = editText.getText().toString().toLowerCase();
-        if(keyword.equals("")) {
-
-
+        if (keyword.equals("")) {
+            textInputLayout.setError("You need to enter a keyword");
         } else {
             keywordManager.addKeyword(keyword);
             this.mAdapter.add(new Keyword(keyword));

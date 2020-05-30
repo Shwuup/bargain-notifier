@@ -6,11 +6,12 @@
     android:layout_marginBottom="4dp"
 
     app:cardCornerRadius="4dp">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width = "match_parent"
-        android:layout_height = "wrap_content"
-        android:gravity = "start"
-        android:orientation = "vertical">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/keyword"
@@ -32,7 +33,6 @@
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="300dp"
-            app:layout_constraintStart_toEndOf="parent"
-            />
+            app:layout_constraintStart_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

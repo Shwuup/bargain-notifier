@@ -17,20 +17,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@android:color/white" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:textSize="18sp"
-        android:inputType="textPersonName"
-        android:imeOptions="actionGo"
-        android:text="@string/edit_message"
         app:layout_constraintEnd_toStartOf="@+id/addButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="72dp"
+        app:errorTextAppearance="@style/error_appearance"
+        app:errorEnabled="true"
+        app:layout_constraintTop_toTopOf="@+id/toolbar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionGo"
+            android:inputType="text"
+            android:maxLines="1"
+            android:hint="Enter a keyword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/addButton"
@@ -41,10 +51,10 @@
         android:layout_marginTop="25dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:textColor="@android:color/white"
         android:backgroundTint="#ff8000"
         android:onClick="onAdd"
         android:text="@string/button_send"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/editText"
@@ -55,13 +65,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:backgroundTint="#ff4d4d"
-        android:textColor="@android:color/white"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="19dp"
+        android:backgroundTint="#ff4d4d"
         android:onClick="showConfirmationForDeleteAll"
         android:text="@string/button_delete_all"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText"
         app:layout_constraintVertical_bias="0.0" />
@@ -72,9 +82,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/keywords_title"
-        app:layout_constraintTop_toBottomOf="@+id/deleteAllButton"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deleteAllButton"
         tools:layout_editor_absoluteY="205dp" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -90,8 +100,6 @@
         app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/keywordsTitle" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
