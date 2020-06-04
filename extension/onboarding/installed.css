@@ -7,20 +7,15 @@ h3 {
   color: #e67e22;
 }
 #main {
-  margin: 50px;
-  width: 600px;
-  height: 1000px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
 }
 
 #indented {
-  margin-left: 76px;
+  margin-left: 65px;
 }
 strong {
   color: #e67e22;
