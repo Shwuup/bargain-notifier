@@ -21,9 +21,10 @@ def get_deals(url):
 def upload():
     deals = get_deals("https://www.ozbargain.com.au/")
     new_deals = get_deals("https://www.ozbargain.com.au/deals")
-    deals.update(new_deals)
     s3 = boto3.resource("s3")
-    s3.Bucket("cached-deals").put_object(Key="dic", Body=json.dumps(deals))
+    s3.Bucket("cached-deals").put_object(Key="frontPageDeals", Body=json.dumps(deals))
+    s3.Bucket("cached-deals").put_object(Key="newDeals", Body=json.dumps(new_deals))
+
 
 def lambda_handler(event, context):
     upload()

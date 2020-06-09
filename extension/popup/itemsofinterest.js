@@ -64,20 +64,16 @@ function handleAllBargainClicks() {
 function handleBargainClick(keywordsJson, keyword) {
   keywordDiv = document.getElementById(keyword);
   keywordDiv.className = "keyword";
-  // let keywordInfo = keywordsJson["keywords"][keyword];
   let keywordInfo = keywordsJson["keywords"].find(
     keywordInfo => keywordInfo.keyword === keyword
   );
-
   const seenDeals = keywordsJson["seenDeals"];
-  // const offers = Object.keys(keywordInfo["offers"]);
-  const offers = keywordInfo["offers"];
-  offers.forEach(offerInfo => {
-    const offerUrl = offerInfo["url"];
+  const offers = Object.keys(keywordInfo["offers"]);
+  offers.forEach(offerUrl => {
     browser.tabs.create({
       url: offerUrl
     });
-    seenDeals[offerUrl] = offerInfo["title"];
+    seenDeals[offerUrl] = keywordInfo["offers"][offerUrl];
   });
   keywordInfo["hasUserClicked"] = true;
   keywordInfo["offers"] = [];
@@ -129,7 +125,6 @@ keywords.then(obj => {
   if (keywordArray.length > 0) {
     keywordArray.forEach(keywordInfo => {
       const keyword = keywordInfo["keyword"];
-      // let keywordInfo = keywordsObject[keyword];
       let div = document.createElement("div");
       div.id = keyword;
       if (keywordInfo["isOnFrontPage"] && !keywordInfo["hasUserClicked"]) {

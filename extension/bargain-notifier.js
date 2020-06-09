@@ -1,6 +1,6 @@
 function apiCall(payloadBody) {
   return fetch(
-    "https://jqjhg6iepc.execute-api.ap-southeast-2.amazonaws.com/prod/bargain",
+    "https://jqjhg6iepc.execute-api.ap-southeast-2.amazonaws.com/test/bargain",
     {
       body: payloadBody,
       credentials: "omit",
@@ -47,7 +47,8 @@ function checkForNewDeals() {
       let payload = {
         keywords: keywordObject["keywords"],
         numberOfUnclickedKeywords: keywordObject["numberOfUnclickedKeywords"],
-        seenDeals: keywordObject["seenDeals"]
+        seenDeals: keywordObject["seenDeals"],
+        isFrontPageOnly: keywordObject["isFrontPageOnly"]
       };
       console.log(payload);
 
@@ -89,9 +90,9 @@ function setDefaultValues() {
         .set({
           keywords: [],
           numberOfUnclickedKeywords: 0,
-          isNotified: false,
           seenDeals: {},
-          sliderValue: 0.5
+          sliderValue: 0.5,
+          isFrontPageOnly: false
         })
         .then(onSet, onError);
     }
