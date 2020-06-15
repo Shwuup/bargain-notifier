@@ -1,9 +1,7 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup  # pylint: disable=import-error
 import requests
-import boto3
+import boto3  # pylint: disable=import-error
 import json
-
-
 
 
 def get_deals(url):
@@ -28,5 +26,4 @@ def upload():
 
 def lambda_handler(event, context):
     upload()
-    
 

@@ -1,6 +1,7 @@
+let DEBUG = false;
 function apiCall(payloadBody) {
   return fetch(
-    "https://jqjhg6iepc.execute-api.ap-southeast-2.amazonaws.com/test/bargain",
+    "https://jqjhg6iepc.execute-api.ap-southeast-2.amazonaws.com/prod/bargain",
     {
       body: payloadBody,
       credentials: "omit",
@@ -12,7 +13,7 @@ function apiCall(payloadBody) {
 }
 
 function handleMessage(request) {
-  console.log("Message from the content script: " + request.action);
+  DEBUG && console.log("Message from the content script: " + request.action);
   browser.browserAction.setIcon({
     path: {
       16: "icons/icons8-o-16.png",
@@ -22,7 +23,7 @@ function handleMessage(request) {
 }
 
 function playAudio() {
-  var audio = new Audio("kaching.mp3");
+  let audio = new Audio("kaching.mp3");
   browser.storage.local.get("sliderValue").then(vol => {
     audio.volume = vol.sliderValue;
     audio.play();
@@ -41,21 +42,18 @@ function createNotification() {
 function checkForNewDeals() {
   const keywordPromise = browser.storage.local.get();
   keywordPromise.then(keywordObject => {
-    console.log(keywordObject);
+    DEBUG && console.log(keywordObject);
     if (keywordObject["keywords"].length > 0) {
-      console.log("making payload");
+      DEBUG && console.log("making payload");
       let payload = {
         keywords: keywordObject["keywords"],
         numberOfUnclickedKeywords: keywordObject["numberOfUnclickedKeywords"],
         seenDeals: keywordObject["seenDeals"],
         isFrontPageOnly: keywordObject["isFrontPageOnly"]
       };
-      console.log(payload);
-
       apiCall(JSON.stringify(payload))
         .then(response => response.json())
         .then(jsonResponse => {
-          console.log(jsonResponse);
           if (jsonResponse.areThereNewDeals) {
             // update the state
             delete jsonResponse.areThereNewDeals;
@@ -75,13 +73,13 @@ function checkForNewDeals() {
 }
 
 function onError(error) {
-  console.log(error);
+  DEBUG && console.log(error);
 }
 function onGet(item) {
-  console.log(`Sucessfully get: ${item}`);
+  DEBUG && console.log(`Sucessfully get: ${item}`);
 }
 function onSet() {
-  console.log("Succesfull set");
+  DEBUG && console.log("Succesfull set");
 }
 function setDefaultValues() {
   browser.storage.local.get().then(results => {
@@ -114,4 +112,4 @@ browser.runtime.onInstalled.addListener(async ({ reason, temporary }) => {
 setDefaultValues();
 browser.runtime.onMessage.addListener(handleMessage);
 setTimeout(checkForNewDeals, 60000);
-setInterval(checkForNewDeals, 1800000);
+setInterval(checkForNewDeals, 100000);

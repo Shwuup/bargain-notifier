@@ -1,12 +1,13 @@
+let DEBUG = false;
 function onGet(item) {
-  console.log(`Sucessfully get: ${JSON.stringify(item)}`);
+  DEBUG && console.log(`Sucessfully get: ${JSON.stringify(item)}`);
   return item;
 }
 function onSet() {
-  console.log("Successfull set");
+  DEBUG && console.log("Successfull set");
 }
 function onError(error) {
-  console.log(`Error: ${error}`);
+  DEBUG && console.log(`Error: ${error}`);
 }
 function storeItem(item) {
   return browser.storage.local.set(item);
@@ -68,12 +69,13 @@ function handleBargainClick(keywordsJson, keyword) {
     keywordInfo => keywordInfo.keyword === keyword
   );
   const seenDeals = keywordsJson["seenDeals"];
-  const offers = Object.keys(keywordInfo["offers"]);
-  offers.forEach(offerUrl => {
+
+  const offers = keywordInfo["offers"];
+  offers.forEach(offerObj => {
     browser.tabs.create({
-      url: offerUrl
+      url: offerObj.url
     });
-    seenDeals[offerUrl] = keywordInfo["offers"][offerUrl];
+    seenDeals[offerObj.url] = offerObj.title;
   });
   keywordInfo["hasUserClicked"] = true;
   keywordInfo["offers"] = [];
